@@ -102,13 +102,13 @@ resource "aws_iam_role_policy_attachment" "anzchallengenoderole-AmazonEKSWorkerN
   depends_on = [aws_iam_role.anzchallengenoderole]
 }
 
-resource "aws_iam_role_policy_attachment" "anzchallenge-AmazonEKS_CNI_Policy" {
+resource "aws_iam_role_policy_attachment" "anzchallengenoderole-AmazonEKS_CNI_Policy" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
   role       = aws_iam_role.anzchallengenoderole.name
   depends_on = [aws_iam_role.anzchallengenoderole]
 }
 
-resource "aws_iam_role_policy_attachment" "anzchallenge-AmazonEC2ContainerRegistryReadOnly" {
+resource "aws_iam_role_policy_attachment" "anzchallengenoderole-AmazonEC2ContainerRegistryReadOnly" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
   role       = aws_iam_role.anzchallengenoderole.name
   depends_on = [aws_iam_role.anzchallengenoderole]
