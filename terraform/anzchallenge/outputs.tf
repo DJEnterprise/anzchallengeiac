@@ -38,5 +38,5 @@ output "load_balancer_hostname" {
 }
 
 output "load_balancer_ip" {
-  value = kubernetes_service.anzchallenge_service.status.0.load_balancer.0.ingress.0.ip}"
+  value = kubernetes_service.anzchallenge_service.status.0.load_balancer.0.ingress.0.ip
 }
