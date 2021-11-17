@@ -32,8 +32,8 @@ module "vpc" {
   }
 }
 
-resource "aws_security_group" "worker_group_mgmt_one" {
-  name_prefix = "worker_group_mgmt_one"
+resource "aws_security_group" "anz_challenge_sg1" {
+  name_prefix = "anz_challenge_sg1"
   vpc_id      = module.vpc.vpc_id
 
   ingress {
@@ -47,7 +47,7 @@ resource "aws_security_group" "worker_group_mgmt_one" {
   }
 }
 
-resource "aws_security_group" "anz_challenge_sg2 {
+resource "aws_security_group" "anz_challenge_sg2" {
   name_prefix = "anz_challenge_sg2"
   vpc_id      = module.vpc.vpc_id
 
@@ -62,8 +62,8 @@ resource "aws_security_group" "anz_challenge_sg2 {
   }
 }
 
-resource "aws_security_group" "anz_challenge_sg1" {
-  name_prefix = "anz_challenge_sg1"
+resource "aws_security_group" "anz_challenge_all" {
+  name_prefix = "anz_challenge_all"
   vpc_id      = module.vpc.vpc_id
 
   ingress {
