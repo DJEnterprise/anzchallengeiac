@@ -79,6 +79,44 @@ resource "aws_eks_fargate_profile" "anzchallenge-eks-fargate-profile" {
   depends_on            = [module.eks]
 }
 
+resource "kubernetes_pod" "anzchallenge_pod" {
+  metadata {
+    name = "anzchallenge_app"
+    labels{
+        App = "anzchallenge_app"
+    }
+  }
+  spec {
+    container {
+      image = "621255284514.dkr.ecr.ap-southeast-2.amazonaws.com/mydockerrepo:latest"
+      name  = "anzchallenge_app"
+
+      port {
+        container_port = 8085
+      }
+      }
+    }
+    depends_on  = [aws_eks_fargate_profile.anzchallenge-eks-fargate-profile]
+}
+
+resource "kubernetes_service" "anzchallenge_service" {
+  metadata {
+    name = "anzchallenge_service"
+  }
+  spec {
+    selector {
+      App = "${kubernetes_pod.anzchallenge_pod.metadata.0.labels.App}"
+    }
+    port {
+      port        = 80
+      target_port = 8085
+    }
+    type = "LoadBalancer"
+}
+depends_on  = [kubernetes_pod.anzchallenge_pod]
+}
+
+
 data "aws_eks_cluster" "cluster" {
   name = module.eks.cluster_id
 }
