@@ -1,7 +1,3 @@
-variable "region" {
-  default     = var.region
-  description = "AWS region"
-}
 
 data "aws_availability_zones" "available" {}
 
