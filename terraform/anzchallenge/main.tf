@@ -82,8 +82,8 @@ resource "aws_eks_fargate_profile" "anzchallenge-eks-fargate-profile" {
 resource "kubernetes_pod" "anzchallenge_pod" {
   metadata {
     name = "anzchallenge_app"
-    labels{
-        App = "anzchallenge_app"
+    labels = {
+      app = "anzchallenge_app"
     }
   }
   spec {
@@ -104,8 +104,8 @@ resource "kubernetes_service" "anzchallenge_service" {
     name = "anzchallenge_service"
   }
   spec {
-    selector {
-      App = "${kubernetes_pod.anzchallenge_pod.metadata.0.labels.App}"
+    selector = {
+      app = kubernetes_pod.anzchallenge_pod.metadata.0.labels.app
     }
     port {
       port        = 80
