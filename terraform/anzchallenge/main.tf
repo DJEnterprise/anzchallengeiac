@@ -32,53 +32,6 @@ module "vpc" {
   }
 }
 
-resource "aws_security_group" "anz_challenge_sg1" {
-  name_prefix = "anz_challenge_sg1"
-  vpc_id      = module.vpc.vpc_id
-
-  ingress {
-    from_port = 22
-    to_port   = 22
-    protocol  = "tcp"
-
-    cidr_blocks = [
-      "10.0.0.0/8",
-    ]
-  }
-}
-
-resource "aws_security_group" "anz_challenge_sg2" {
-  name_prefix = "anz_challenge_sg2"
-  vpc_id      = module.vpc.vpc_id
-
-  ingress {
-    from_port = 22
-    to_port   = 22
-    protocol  = "tcp"
-
-    cidr_blocks = [
-      "192.168.0.0/16",
-    ]
-  }
-}
-
-resource "aws_security_group" "anz_challenge_all" {
-  name_prefix = "anz_challenge_all"
-  vpc_id      = module.vpc.vpc_id
-
-  ingress {
-    from_port = 22
-    to_port   = 22
-    protocol  = "tcp"
-
-    cidr_blocks = [
-      "10.0.0.0/8",
-      "172.16.0.0/12",
-      "192.168.0.0/16",
-    ]
-  }
-}
-
 module "eks" {
   source          = "terraform-aws-modules/eks/aws"
   cluster_name    = local.cluster_name
@@ -92,26 +45,37 @@ module "eks" {
 
   vpc_id = module.vpc.vpc_id
 
-  workers_group_defaults = {
-    root_volume_type = "gp2"
-  }
+}
 
-  worker_groups = [
-    {
-      name                          = "anzchallenge-group-1"
-      instance_type                 = "t2.micro"
-      additional_userdata           = "echo anzchallenge group 1"
-      asg_desired_capacity          = 2
-      additional_security_group_ids = [aws_security_group.anz_challenge_sg1.id]
-    },
-    {
-      name                          = "anzchallenge-group-2"
-      instance_type                 = "t2.micro"
-      additional_userdata           = "echo anzchallenge group 2"
-      additional_security_group_ids = [aws_security_group.anz_challenge_sg2.id]
-      asg_desired_capacity          = 1
-    },
-  ]
+resource "aws_iam_role" "anzchallenge_eks_role" {
+  name = "anzchallenge-eks-fargate-profile-role"
+
+  assume_role_policy = jsonencode({
+    Statement = [{
+      Action = "sts:AssumeRole"
+      Effect = "Allow"
+      Principal = {
+        Service = "eks-fargate-pods.amazonaws.com"
+      }
+    }]
+    Version = "2012-10-17"
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "anzchallenge-AmazonEKSFargatePodExecutionRolePolicy" {
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSFargatePodExecutionRolePolicy"
+  role       = aws_iam_role.anzchallenge_eks_role.name
+}
+
+resource "aws_eks_fargate_profile" "anzchallenge-eks-fargate-profile" {
+  cluster_name           = local.cluster_name
+  fargate_profile_name   = "anzchallenge-eks-fargate-profile"
+  pod_execution_role_arn = aws_iam_role.anzchallenge_eks_role.arn
+  subnet_ids             = module.vpc.private_subnets
+
+  selector { 
+    namespace = "fargatenamespace"
+  }
 }
 
 data "aws_eks_cluster" "cluster" {
