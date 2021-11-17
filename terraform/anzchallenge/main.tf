@@ -105,7 +105,7 @@ resource "kubernetes_service" "anzchallenge-service" {
   }
   spec {
     selector = {
-      app = kubernetes_pod.anzchallenge-pod.metadata.0.labels.app
+      app = kubernetes_pod.anzchallengepod.metadata.0.labels.app
     }
     port {
       port        = 80
@@ -113,7 +113,7 @@ resource "kubernetes_service" "anzchallenge-service" {
     }
     type = "LoadBalancer"
 }
-depends_on  = [kubernetes_pod.anzchallenge-pod]
+depends_on  = [kubernetes_pod.anzchallengepod]
 }
 
 
