@@ -1,6 +1,6 @@
 env_type = "nonprod"
 
-region = "ap_southeast_2"
+region = "ap-southeast-2"
 
 
 
