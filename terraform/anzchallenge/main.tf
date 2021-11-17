@@ -76,6 +76,7 @@ resource "aws_eks_fargate_profile" "anzchallenge-eks-fargate-profile" {
   selector { 
     namespace = "fargatenamespace"
   }
+  depends_on            = [module.eks]
 }
 
 data "aws_eks_cluster" "cluster" {
