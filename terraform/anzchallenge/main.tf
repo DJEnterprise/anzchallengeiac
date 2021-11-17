@@ -79,17 +79,17 @@ resource "aws_eks_fargate_profile" "anzchallenge-eks-fargate-profile" {
   depends_on            = [module.eks]
 }
 
-resource "kubernetes_pod" "anzchallenge_pod" {
+resource "kubernetes_pod" "anzchallengepod" {
   metadata {
-    name = "anzchallenge_app"
+    name = "anzchallenge-app"
     labels = {
-      app = "anzchallenge_app"
+      app = "anzchallenge-app"
     }
   }
   spec {
     container {
       image = "621255284514.dkr.ecr.ap-southeast-2.amazonaws.com/mydockerrepo:latest"
-      name  = "anzchallenge_app"
+      name  = "anzchallenge-app"
 
       port {
         container_port = 8085
@@ -99,13 +99,13 @@ resource "kubernetes_pod" "anzchallenge_pod" {
     depends_on  = [aws_eks_fargate_profile.anzchallenge-eks-fargate-profile]
 }
 
-resource "kubernetes_service" "anzchallenge_service" {
+resource "kubernetes_service" "anzchallenge-service" {
   metadata {
-    name = "anzchallenge_service"
+    name = "anzchallenge-service"
   }
   spec {
     selector = {
-      app = kubernetes_pod.anzchallenge_pod.metadata.0.labels.app
+      app = kubernetes_pod.anzchallenge-pod.metadata.0.labels.app
     }
     port {
       port        = 80
@@ -113,7 +113,7 @@ resource "kubernetes_service" "anzchallenge_service" {
     }
     type = "LoadBalancer"
 }
-depends_on  = [kubernetes_pod.anzchallenge_pod]
+depends_on  = [kubernetes_pod.anzchallenge-pod]
 }
 
 
