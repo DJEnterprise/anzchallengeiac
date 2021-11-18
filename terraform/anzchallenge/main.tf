@@ -171,8 +171,10 @@ resource "kubernetes_deployment" "anzchallengepod" {
       }
       }
     }
-    depends_on  = [aws_eks_node_group.anzchallengenodes]
     }
+  }
+    depends_on  = [aws_eks_node_group.anzchallengenodes]
+
 }
 
 
