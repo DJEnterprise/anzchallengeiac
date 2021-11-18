@@ -150,7 +150,7 @@ resource "kubernetes_service" "anzchallenge-service" {
       app = kubernetes_deployment.anzchallengepod.metadata.0.labels.app
     }
     port {
-      port        = 8085
+      port        = 80
       target_port = 8085
     }
     type = "LoadBalancer"
