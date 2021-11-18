@@ -184,7 +184,7 @@ resource "kubernetes_service" "anzchallenge-service" {
   }
   spec {
     selector = {
-      app = kubernetes_pod.anzchallengepod.metadata.0.labels.app
+      app = kubernetes_deployment.anzchallengepod.metadata.0.labels.app
     }
     port {
       port        = 8085
