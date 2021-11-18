@@ -6,7 +6,6 @@ module "eks" {
 
   tags = {
     name = "anzchallenge"
- 
   }
 
   vpc_id = module.vpc.vpc_id
@@ -97,8 +96,6 @@ resource "aws_eks_node_group" "anzchallengenodes" {
     max_unavailable = 1
   }
 
-  # Ensure that IAM Role permissions are created before and deleted after EKS Node Group handling.
-  # Otherwise, EKS will not be able to properly delete EC2 Instances and Elastic Network Interfaces.
   depends_on = [
     aws_iam_role_policy_attachment.anzchallengenoderole-AmazonEKSWorkerNodePolicy,
     aws_iam_role_policy_attachment.anzchallengenoderole-AmazonEKS_CNI_Policy,
@@ -129,7 +126,7 @@ resource "kubernetes_deployment" "anzchallengepod" {
   
   spec {
     container {
-      image = "621255284514.dkr.ecr.ap-southeast-2.amazonaws.com/mydockerrepo:latest"
+      image = "var.container_image_name"
       name  = "anzchallenge-app"
 
       port {
@@ -153,7 +150,7 @@ resource "kubernetes_service" "anzchallenge-service" {
       app = kubernetes_deployment.anzchallengepod.metadata.0.labels.app
     }
     port {
-      port        = 80
+      port        = 8085
       target_port = 8085
     }
     type = "LoadBalancer"
