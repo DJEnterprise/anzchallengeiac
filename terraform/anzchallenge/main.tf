@@ -140,13 +140,27 @@ resource "aws_eks_node_group" "anzchallengenodes" {
   ]
 }
 
-resource "kubernetes_pod" "anzchallengepod" {
+resource "kubernetes_deployment" "anzchallengepod" {
   metadata {
     name = "anzchallenge-app"
     labels = {
       app = "anzchallenge-app"
     }
   }
+  spec {
+      replicas = 3
+      selector {
+      match_labels = {
+        app = "anzchallenge-app"
+      }
+    }
+    template {
+      metadata {
+        labels = {
+          app = "anzchallenge-app"
+        }
+      }
+  
   spec {
     container {
       image = "621255284514.dkr.ecr.ap-southeast-2.amazonaws.com/mydockerrepo:latest"
@@ -158,7 +172,9 @@ resource "kubernetes_pod" "anzchallengepod" {
       }
     }
     depends_on  = [aws_eks_node_group.anzchallengenodes]
+    }
 }
+
 
 resource "kubernetes_service" "anzchallenge-service" {
   metadata {
@@ -174,7 +190,7 @@ resource "kubernetes_service" "anzchallenge-service" {
     }
     type = "LoadBalancer"
 }
-depends_on  = [kubernetes_pod.anzchallengepod]
+depends_on  = [kubernetes_deployment.anzchallengepod]
 }
 
 
