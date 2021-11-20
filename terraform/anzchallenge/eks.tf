@@ -12,39 +12,6 @@ module "eks" {
 
 }
 
-resource "aws_iam_role" "anzchallenge_eks_role" {
-  name = "anzchallenge-eks-fargate-profile-role"
-
-  assume_role_policy = jsonencode({
-    Statement = [{
-      Action = "sts:AssumeRole"
-      Effect = "Allow"
-      Principal = {
-        Service = "eks-fargate-pods.amazonaws.com"
-      }
-    }]
-    Version = "2012-10-17"
-  })
-}
-
-resource "aws_iam_role_policy_attachment" "anzchallenge-AmazonEKSFargatePodExecutionRolePolicy" {
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSFargatePodExecutionRolePolicy"
-  role       = aws_iam_role.anzchallenge_eks_role.name
-}
-
-resource "aws_eks_fargate_profile" "anzchallenge-eks-fargate-profile" {
-  cluster_name           = var.cluster_name
-  fargate_profile_name   = "anzchallenge-eks-fargate-profile"
-  pod_execution_role_arn = aws_iam_role.anzchallenge_eks_role.arn
-  subnet_ids             = module.vpc.private_subnets
-
-  selector { 
-    namespace = "fargatenamespace"
-  }
-  depends_on            = [module.eks]
-}
-
-
 resource "aws_iam_role" "anzchallengenoderole" {
   name = "eks-node-group-anzchallengenoderole"
 
@@ -58,7 +25,7 @@ resource "aws_iam_role" "anzchallengenoderole" {
     }]
     Version = "2012-10-17"
   })
-   depends_on            = [aws_eks_fargate_profile.anzchallenge-eks-fargate-profile]
+   depends_on            = [module.eks]
 }
 
 resource "aws_iam_role_policy_attachment" "anzchallengenoderole-AmazonEKSWorkerNodePolicy" {
@@ -111,7 +78,7 @@ resource "kubernetes_deployment" "anzchallengepod" {
     }
   }
   spec {
-      replicas = 3
+      replicas = 2
       selector {
       match_labels = {
         app = "anzchallenge-app"
@@ -137,9 +104,7 @@ resource "kubernetes_deployment" "anzchallengepod" {
     }
   }
     depends_on  = [aws_eks_node_group.anzchallengenodes]
-
 }
-
 
 resource "kubernetes_service" "anzchallenge-service" {
   metadata {
