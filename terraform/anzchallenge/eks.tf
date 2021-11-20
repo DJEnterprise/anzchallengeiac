@@ -55,7 +55,7 @@ resource "aws_eks_node_group" "anzchallengenodes" {
   instance_types  = ["t3.micro"]
 
   scaling_config {
-    desired_size = 1
+    desired_size = 2
     max_size     = 2
     min_size     = 1
   }
