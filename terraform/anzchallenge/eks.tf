@@ -52,6 +52,7 @@ resource "aws_eks_node_group" "anzchallengenodes" {
   node_group_name = "anzchallengenodes"
   node_role_arn   = aws_iam_role.anzchallengenoderole.arn
   subnet_ids      = module.vpc.private_subnets
+  instance_types  = "t3.micro"
 
   scaling_config {
     desired_size = 1
@@ -95,7 +96,7 @@ resource "kubernetes_deployment" "anzchallengepod" {
     container {
       image = var.container_image_name
       name  = "anzchallenge-app"
-
+      image_pull_policy = "Always"
       port {
         container_port = 8085
       }
