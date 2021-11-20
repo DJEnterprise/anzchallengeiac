@@ -93,7 +93,7 @@ resource "kubernetes_deployment" "anzchallengepod" {
   
   spec {
     container {
-      image = "var.container_image_name"
+      image = var.container_image_name
       name  = "anzchallenge-app"
 
       port {
