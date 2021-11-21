@@ -53,7 +53,7 @@ resource "aws_eks_node_group" "anzchallengenodes" {
   node_group_name = "anzchallengenodes"
   node_role_arn   = aws_iam_role.anzchallengenoderole.arn
   subnet_ids      = module.vpc.private_subnets
-  #instance_types  = ["t3.micro"]
+  instance_types  = ["t3.micro"]
 
   scaling_config {
     desired_size = 2
