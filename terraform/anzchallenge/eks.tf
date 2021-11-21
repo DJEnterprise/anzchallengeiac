@@ -1,6 +1,7 @@
+
 module "eks" {
   source          = "terraform-aws-modules/eks/aws"
-  cluster_name    = var.cluster_name"-${random_string.suffix.result}"
+  cluster_name    = var.cluster_name
   cluster_version = "1.20"
   subnets         = module.vpc.private_subnets
 
@@ -48,11 +49,11 @@ resource "aws_iam_role_policy_attachment" "anzchallengenoderole-AmazonEC2Contain
 
 
 resource "aws_eks_node_group" "anzchallengenodes" {
-  cluster_name    = var.cluster_name"-${random_string.suffix.result}"
+  cluster_name    = var.cluster_name
   node_group_name = "anzchallengenodes"
   node_role_arn   = aws_iam_role.anzchallengenoderole.arn
   subnet_ids      = module.vpc.private_subnets
-  instance_types  = ["t3.micro"]
+  #instance_types  = ["t3.micro"]
 
   scaling_config {
     desired_size = 2
